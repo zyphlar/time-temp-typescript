@@ -1,0 +1,38 @@
+{
+  "name": "time-temp-typescript",
+  "version": "0.0.1",
+  "description": "Time and Temperature phone service for Typescript and AWS Lambda",
+  "author": "zyphlar",
+  "license": "MIT",
+  "scripts": {
+    "prebuild": "rm -rf dist",
+    "build": "esbuild src/index.ts --bundle --loader:.pug=file --sourcemap --platform=node --target=es2020 --outfile=dist/index.js",
+    "postbuild": "cd dist && zip -r index.zip index.js* *.pug",
+    "build-dev": "esbuild src/server.ts --bundle --loader:.pug=file --sourcemap --platform=node --target=es2020 --outfile=dist/server.js",
+    "serve": "cd dist && node server.js",
+    "start": "npm run serve",
+    "dev-build-start": "npm run build-dev && npm run serve",
+    "local-lambda": "cp util/test-lambda-event.json dist/event.json && cd dist && node -e \"console.log(require('./index').handler(require('./event.json')));\""
+  },
+  "dependencies": {
+    "aws-lambda": "^1.0.7",
+    "body-parser": "^1.20.1",
+    "dwml-to-json": "^0.1.0",
+    "errorhandler": "^1.5.1",
+    "express": "^4.18.2",
+    "moment": "^2.29.4",
+    "moment-timezone": "^0.5.40",
+    "pug": "^3.0.2",
+    "xml-js": "^1.6.11"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.110",
+    "@types/errorhandler": "^1.5.0",
+    "@types/express": "^4.17.17",
+    "@types/moment": "^2.13.0",
+    "@types/moment-timezone": "^0.5.30",
+    "@types/pug": "^2.0.6",
+    "@types/xml-js": "^1.0.0",
+    "esbuild": "^0.17.7"
+  }
+}

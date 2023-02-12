@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+Response
+  Gather(input="dtmf" timeout="5" numDigits="3")
+    Say(voice=voiceA)
+      | Hello. #{now}, was the current time when this call began.
+    Say(voice=voiceB)
+      | #{apiConfigs.city_name} Time and Temperature is a free hobby service, courtesy of your friendly local hackerspace, and the National Weather Service.
+    Say(voice=voiceA)
+      | It was #{data.currentobservation.Temp} degrees Fahrenheit or #{convertFtoC(data.currentobservation.Temp)} degrees Celsius at #{getLastPartOfLocation(data.currentobservation.name)} at #{formatObsDate(data.currentobservation.Date)}.
+      |  The relative humidity was #{data.currentobservation.Relh}%.
+      |  The dew point was #{data.currentobservation.Dewp} degrees.
+      if data.currentobservation.WindChill != "NA"
+        |  The wind chill was #{data.currentobservation.WindChill} degrees.
+      |  The weather was #{data.currentobservation.Weather}.
+
+      | Winds were #{data.currentobservation.Winds} miles per hour coming from the #{getCompassDirection(data.currentobservation.Windd)}
+      if data.currentobservation.Gust != "NA" && data.currentobservation.Gust != 0
+        |  and gusting to #{data.currentobservation.Gust} miles per hour.
+      else
+        | .
+
+      |  The pressure was #{data.currentobservation.SLP} inches of mercury, which is
+      if data.currentobservation.SLP > 30.4
+        |  very dry.
+      else if data.currentobservation.SLP > 29.75
+        |  fair.
+      else if data.currentobservation.SLP > 29.25
+        |  changing.
+      else if data.currentobservation.SLP > 28.6
+        |  rainy.
+      else if data.currentobservation.SLP > 0
+        |  stormy.
+
+      |  The visibility was #{Math.round(data.currentobservation.Visibility)} miles.
+
+    Say(voice=voiceB)
+      | Please press any key to hear this message again.
+      // press two to hear the news, or press nine to hear a poem.
+
+  Say(voice=voiceB)
+    | Thank you for calling.
+    // Your fortune is: Your lover will never wish to leave you..
+
+  Pause(length=10)
+  Say(voice=voiceB)
+    | Goodbye!
